@@ -17,6 +17,10 @@
 # Recordings can get excessive in size
 /[Rr]ecordings/
 
+# Art assets and animation files
+/[Aa]ssets/ArtAssets
+/[Aa]ssets/ArtAssets.meta
+
 # Uncomment this line if you wish to ignore the asset store tools plugin
 # /[Aa]ssets/AssetStoreTools*
 
