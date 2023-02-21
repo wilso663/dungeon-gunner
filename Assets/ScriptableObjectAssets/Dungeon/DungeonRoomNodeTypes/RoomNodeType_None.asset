@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37f97af30f7338b41b9d40683685965e, type: 3}
   m_Name: RoomNodeType_None
   m_EditorClassIdentifier: 
-  roomNodeTypeName: Small Room
+  roomNodeTypeName: None
   displayInNodeGraphEditor: 1
   isCorridor: 0
   isCorridorNS: 0
   isCorridorEW: 0
   isEntrance: 0
   isBossRoom: 0
-  isNone: 0
+  isNone: 1
