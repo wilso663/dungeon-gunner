@@ -96,9 +96,15 @@ public class RoomNodeSO : ScriptableObject
         if(currentEvent.button == 0)
         {
             ProcessLeftClickDownEvent();
+        } else if(currentEvent.button == 1)
+        {
+            ProcessRightClickDownEvent(currentEvent);
         }
     }
 
+    /// <summary>
+    /// Make the currently moused over object the active object in the editor and set it to selected
+    /// </summary>
     private void ProcessLeftClickDownEvent()
     {
         Selection.activeObject = this;
@@ -106,12 +112,26 @@ public class RoomNodeSO : ScriptableObject
         isSelected = !isSelected;
     }
 
+    /// <summary>
+    /// Makes the currently moused over node the object to set to draw from if being dragged by right mouse
+    /// </summary>
+    private void ProcessRightClickDownEvent(Event currentEvent)
+    {
+        roomNodeGraph.SetNodeToDrawConnectionLineFrom(this, currentEvent.mousePosition);
+    }
+
+    /// <summary>
+    /// Process releasing left mouse to select a node
+    /// </summary>
     private void ProcessMouseUpEvent(Event currentEvent)
     {
         if (currentEvent.button == 0)
             ProcessLeftClickUpEvent();
     }
 
+    /// <summary>
+    /// Set current mouse over object to not be left click dragging
+    /// </summary>
     private void ProcessLeftClickUpEvent()
     {
         if (isLeftClickDragging)
@@ -120,6 +140,9 @@ public class RoomNodeSO : ScriptableObject
         }
     }
 
+    /// <summary>
+    /// Process event to drag node and update gui
+    /// </summary>
     private void ProcessMouseDragEvent(Event currentEvent)
     {
         isLeftClickDragging = true;
@@ -127,10 +150,28 @@ public class RoomNodeSO : ScriptableObject
         GUI.changed = true;
     }
 
+    /// <summary>
+    /// Drag node method to move nodes in the editor
+    /// </summary>
     public void DragNode(Vector2 delta)
     {
         rect.position += delta;
         EditorUtility.SetDirty(this);
+    }
+
+    /// <summary>
+    /// Add childID to the node
+    /// </summary>
+    public bool AddChildRoomIDToRoomNode(string childID)
+    {
+        childRoomNodeIDList.Add(childID);
+        return true;
+    }
+
+    public bool AddParentRoomIDToRoomNode(string parentID)
+    {
+        parentRoomNodeIDList.Add(parentID);
+        return true;
     }
 
 #endif
