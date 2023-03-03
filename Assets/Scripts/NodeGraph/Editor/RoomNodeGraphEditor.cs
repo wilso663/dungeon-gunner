@@ -28,6 +28,8 @@ public class RoomNodeGraphEditor : EditorWindow
 
     private void OnEnable()
     {
+        Selection.selectionChanged += InspectorSelectionChanged;
+
         // Define node layout style
         roomNodeStyle = new GUIStyle();
         roomNodeStyle.normal.background = EditorGUIUtility.Load("node1") as Texture2D;
@@ -44,6 +46,11 @@ public class RoomNodeGraphEditor : EditorWindow
 
         // Load Room node types
         roomNodeTypeList = GameResources.Instance.roomNodeTypeList;
+    }
+
+    private void OnDisable()
+    {
+        Selection.selectionChanged -= InspectorSelectionChanged;
     }
 
     /// <summary>
@@ -371,6 +378,19 @@ public class RoomNodeGraphEditor : EditorWindow
         if(GUI.changed)
         {
             Repaint();
+        }
+    }
+
+    /// <summary>
+    /// Selection change to check if it's a room node graph
+    /// </summary>
+    private void InspectorSelectionChanged()
+    {
+        RoomNodeGraphSO roomNodeGraph = Selection.activeObject as RoomNodeGraphSO;
+        if(roomNodeGraph != null)
+        {
+            currentRoomNodeGraph = roomNodeGraph;
+            GUI.changed = true;
         }
     }
 }
