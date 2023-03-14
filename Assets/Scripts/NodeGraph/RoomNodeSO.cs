@@ -171,10 +171,71 @@ public class RoomNodeSO : ScriptableObject
     /// </summary>
     public bool AddChildRoomIDToRoomNode(string childID)
     {
+        if (IsChildRoomValid(childID)) { 
         childRoomNodeIDList.Add(childID);
+        return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Check if the child node can be validly added to the parent node
+    /// </summary>
+    public bool IsChildRoomValid(string childID)
+    {
+        bool isConnectedToBossNode = false;
+        // set true connected boss room in node graph
+        foreach(RoomNodeSO roomNode in roomNodeGraph.roomNodeList)
+        {
+            if (roomNode.roomNodeType.isBossRoom && roomNode.parentRoomNodeIDList.Count > 0)
+                isConnectedToBossNode = true; break;
+        }
+        // if child node has boss room and is already connected
+        if (roomNodeGraph.GetRoomNode(childID).roomNodeType.isBossRoom && isConnectedToBossNode)
+            return false;
+
+        // if child node has a type of none
+        if (roomNodeGraph.GetRoomNode(childID).roomNodeType.isNone)
+            return false;
+
+        // if node already has a child node with this id
+        if (childRoomNodeIDList.Contains(childID))
+            return false;
+
+        // if child node is trying to connect to itself
+        if (id == childID)
+            return false;
+
+        // if child node already has a parent
+        if (roomNodeGraph.GetRoomNode(childID).parentRoomNodeIDList.Count > 0)
+            return false;
+
+        // if 2 corridors are trying to connect to each other
+        if (roomNodeGraph.GetRoomNode(childID).roomNodeType.isCorridor && roomNodeType.isCorridor)
+            return false;
+
+        // if 2 rooms/non-corridors are trying to connect to each other
+        if (!roomNodeGraph.GetRoomNode(childID).roomNodeType.isCorridor && !roomNodeType.isCorridor)
+            return false;
+
+        // if adding a corridor, check that the selected node is < the max permitted corridors (default 3)
+        if(roomNodeGraph.GetRoomNode(childID).roomNodeType.isCorridor && childRoomNodeIDList.Count >= Settings.amxChildCorridors)
+            return false;
+
+        // if adding a room to a corridor check the corridor doesn't already have a room
+        if (!roomNodeGraph.GetRoomNode(childID).roomNodeType.isCorridor && childRoomNodeIDList.Count > 0)
+            return false;
+
+        // if the child node is an entrance (these must always be the top level node)
+        if (roomNodeGraph.GetRoomNode(childID).roomNodeType.isEntrance)
+            return false;
+
         return true;
     }
 
+    /// <summary>
+    ///  Add parentID to the node
+    /// </summary>
     public bool AddParentRoomIDToRoomNode(string parentID)
     {
         parentRoomNodeIDList.Add(parentID);
